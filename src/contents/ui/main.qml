@@ -15,6 +15,7 @@ Item {
     property string track: ""
     property string artist: ""
     property string playerIcon: ""
+    property string albumArt: ""
 
     property bool noPlayer: true
     
@@ -67,6 +68,8 @@ Item {
 
             var track = metadata["xesam:title"];
             var artist = metadata["xesam:artist"];
+            var trackid = metadata["mpris:trackid"];
+            getThumbnailUrl(trackid);
 
             root.track = track ? track : "";
             root.artist = artist ? artist : "";
@@ -74,7 +77,7 @@ Item {
             // other metadata
             var k;
             for (k in metadata) {
-                //print(" -- " + k + " " + metadata[k]);
+                print(" -- " + k + " " + metadata[k]);
             }
         }
     }
@@ -101,6 +104,25 @@ Item {
         return service.startOperationCall(operation);
     }
 
+    function getThumbnailUrl(trackid) {
+        var xmlhttp = new XMLHttpRequest();
+        var url = "https://open.spotify.com/oembed?url="+trackid;
+
+        xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
+                var obj = JSON.parse(xmlhttp.responseText);
+                setAlbumArt(obj.thumbnail_url);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function setAlbumArt(albumArt) {
+        root.albumArt = albumArt;
+        print(albumArt);
+    }
+
     states: [
         State {
             name: "off"
@@ -108,7 +130,7 @@ Item {
         State {
             name: "playing"
         },
-        State {
+        State {xce
             name: "paused"
         }
     ]
@@ -118,7 +140,7 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
             fillMode: Image.PreserveAspectFit
-            source: mpris2Source.data[mpris2Source.last].Metadata["mpris:artUrl"]
+            source: root.albumArt
         }
     }
 }
