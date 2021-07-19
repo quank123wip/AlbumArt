@@ -34,13 +34,27 @@ Item {
         onSourceAdded: {
             //print("XXX source added: " + source);
             last = source;
+            if (source === last) {
+                last = "@multiplex"
+            }
         }
 
         onSourcesChanged: {
+            //print("Changed Source");
             updateData();
         }
 
         onDataChanged: {
+            //print("Data Changed");
+            for (var k = 0; k < 3; k++) {
+                var d = data[sources[k]];
+                if (d) {
+                    print(d+" "+d["PlaybackStatus"]);
+                    if (d["PlaybackStatus"] == "Playing") {
+                        last = sources[k];
+                    }
+                }
+            }
             updateData();
         }
 
@@ -69,16 +83,24 @@ Item {
             var track = metadata["xesam:title"];
             var artist = metadata["xesam:artist"];
             var trackid = metadata["mpris:trackid"];
-            getThumbnailUrl(trackid);
+            var artUrl = metadata["mpris:artUrl"];
+            if (artUrl) {
+                print(artUrl);
+                if (artUrl.toString().startsWith("file:///")) {
+                    root.albumArt = artUrl;
+                } else {
+                    getThumbnailUrl(trackid);
+                }
+            }
 
             root.track = track ? track : "";
             root.artist = artist ? artist : "";
 
             // other metadata
-            var k;
-            for (k in metadata) {
-                print(" -- " + k + " " + metadata[k]);
-            }
+            //var k;
+            //for (k in metadata) {
+            //    print(" -- " + k + " " + metadata[k]);
+            //}
         }
     }
     function play() {
@@ -120,7 +142,6 @@ Item {
 
     function setAlbumArt(albumArt) {
         root.albumArt = albumArt;
-        print(albumArt);
     }
 
     states: [
@@ -130,7 +151,7 @@ Item {
         State {
             name: "playing"
         },
-        State {xce
+        State {
             name: "paused"
         }
     ]
