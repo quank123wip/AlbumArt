@@ -51,7 +51,6 @@ Comment[zh_CN]=显示当前正在播放的专辑图片
 Icon=applications-system
 Type=Service
 X-KDE-ServiceTypes=Plasma/Applet
-X-KDE-Library=plasma_applet_albumart
 
 X-KDE-PluginInfo-Author=%{AUTHOR}
 X-KDE-PluginInfo-Email=%{EMAIL}
