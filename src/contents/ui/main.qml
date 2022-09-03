@@ -86,7 +86,7 @@ Item {
             var artUrl = metadata["mpris:artUrl"];
             if (artUrl) {
                 print(artUrl);
-                if (artUrl.toString().startsWith("file:///")) {
+                if (artUrl.toString().startsWith("file:///") || artUrl.toString().startsWith("https://i.scdn.co/image/")) {
                     root.albumArt = artUrl;
                 } else {
                     getThumbnailUrl(trackid);
